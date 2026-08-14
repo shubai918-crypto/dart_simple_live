@@ -7,10 +7,6 @@ plugins {
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
-dependencies {
-    // ... 其他依赖
-    implementation("com.rizkyghofur:auto_orientation_v2:2.4.4")
-}
 
 
 val keystoreProperties = Properties()
