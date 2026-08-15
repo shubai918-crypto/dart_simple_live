@@ -25,16 +25,20 @@ jobs:
         with:
           flutter-version: "3.38.x"
 
-      # 还原签名文件
+      # 1. 使用专用 Action 还原签名文件 (完美解决换行和编码损坏问题)
       - name: Restore Keystore
+        id: keystore_file
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: 'my-release-key.jks'
+          encodedString: ${{ secrets.ZI_FEI_YU }}
+
+      # 2. 生成 key.properties
+      - name: Create key.properties
         run: |
-          # 1. 使用 printf 避免末尾产生换行符破坏 JKS 文件
-          # 2. 直接将文件生成在 android/app/ 目录下
-          printf "%s" "${{ secrets.ZI_FEI_YU }}" | base64 --decode > simple_live_app/android/app/my-release-key.jks
-          
           cd simple_live_app/android
-          # 3. 因为 jks 在 app 目录下，这里直接写文件名即可
-          echo "storeFile=my-release-key.jks" > key.properties
+          # 使用 Action 输出的绝对路径，Gradle 能完美识别
+          echo "storeFile=${{ steps.keystore_file.outputs.filePath }}" > key.properties
           echo "storePassword=123456" >> key.properties
           echo "keyPassword=123456" >> key.properties
           echo "keyAlias=mykey" >> key.properties
