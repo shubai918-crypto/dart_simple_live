@@ -344,38 +344,20 @@ mixin PlayerSystemMixin on PlayerMixin, PlayerStateMixin, PlayerDanmakuMixin {
     }
   }
 
-  /// 设置横屏
+// 强制横屏
   Future setLandscapeOrientation() async {
-    if (await beforeIOS16()) {
-      AutoOrientation.landscapeAutoMode();
-    } else {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeLeft,
-        DeviceOrientation.landscapeRight,
-      ]);
-    }
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
   }
 
-  /// 设置竖屏
+  // 恢复竖屏/自动旋转
   Future setPortraitOrientation() async {
-    if (await beforeIOS16()) {
-      AutoOrientation.portraitAutoMode();
-    } else {
-      await SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-    }
+    await SystemChrome.setPreferredOrientations(DeviceOrientation.values);
   }
 
-  /// 是否是IOS16以下
-  Future<bool> beforeIOS16() async {
-    if (Platform.isIOS) {
-      var info = await deviceInfo.iosInfo;
-      var version = info.systemVersion;
-      var versionInt = int.tryParse(version.split('.').first) ?? 0;
-      return versionInt < 16;
-    } else {
-      return false;
-    }
-  }
+
 
   Future saveScreenshot() async {
     try {
