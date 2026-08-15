@@ -41,6 +41,11 @@ jobs:
         run: |
           cd simple_live_app
           flutter clean
+    # 强制删除插件注册缓存文件
+    rm -f .flutter-plugins
+    rm -f .flutter-plugins-dependencies
+    rm -rf .dart_tool
+    flutter pub get
           flutter pub get
           # 针对 vivo/Android 15 优化
           flutter build apk --release --target-platform android-arm64 --no-tree-shake-icons
