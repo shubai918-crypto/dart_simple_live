@@ -25,13 +25,14 @@ jobs:
         with:
           flutter-version: "3.38.x"
 
-      # 1. 使用专用 Action 还原签名文件 (完美解决换行和编码损坏问题)
+# 1. 使用专用 Action 还原签名文件
       - name: Restore Keystore
         id: keystore_file
         uses: timheuer/base64-to-file@v1.2
         with:
           fileName: 'my-release-key.jks'
-          encodedString: ${{ secrets.ZI_FEI_YU }}
+          # 👇 这里改成了你刚才新建的 Secret 名字
+          encodedString: ${{ secrets.ANDROID_KEYSTORE }}
 
       # 2. 生成 key.properties
       - name: Create key.properties
