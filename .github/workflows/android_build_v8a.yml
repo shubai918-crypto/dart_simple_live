@@ -36,20 +36,24 @@ jobs:
           echo "storePassword=123456" >> key.properties
           echo "keyPassword=123456" >> key.properties
           echo "keyAlias=mykey" >> key.properties
-
-      - name: Build APK
-        run: |
-          cd simple_live_app
-          flutter clean
+ - name: Clean and Restore packages
+   run: |
+    cd simple_live_app
+    flutter clean
     # 强制删除插件注册缓存文件
     rm -f .flutter-plugins
     rm -f .flutter-plugins-dependencies
     rm -rf .dart_tool
     flutter pub get
+
+      - name: Build APK
+        run: |
+          cd simple_live_app
+          flutter clean
           flutter pub get
           # 针对 vivo/Android 15 优化
           flutter build apk --release --target-platform android-arm64 --no-tree-shake-icons
-
+          
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
