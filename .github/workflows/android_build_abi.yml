@@ -1,4 +1,4 @@
-name: Build Android v8a
+name: Build Android ABI
 
 on:
   push:
