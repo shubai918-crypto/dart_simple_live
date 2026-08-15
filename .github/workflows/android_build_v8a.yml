@@ -5,7 +5,7 @@ on:
     branches: [ main ] # 或者是 master
     paths:
       - 'simple_live_core/**' # 核心修复逻辑变动
-      - 'simple_live_app/**'  # 版本号变动
+      - 'simple_live_app/**' # 版本号变动
   workflow_dispatch:
 
 jobs:
@@ -36,16 +36,17 @@ jobs:
           echo "storePassword=123456" >> key.properties
           echo "keyPassword=123456" >> key.properties
           echo "keyAlias=mykey" >> key.properties
- - name: Clean and Restore packages
-   run: |
-    cd simple_live_app
-    flutter clean
-    # 强制删除插件注册缓存文件
-    rm -f .flutter-plugins
-    rm -f .flutter-plugins-dependencies
-    rm -rf .dart_tool
-    flutter pub get
-
+          
+      - name: Clean and Restore packages
+        run: |
+          cd simple_live_app
+          flutter clean
+          # 强制删除插件注册缓存文件 (解决 auto_orientation_v2 幽灵报错)
+          rm -f .flutter-plugins
+          rm -f .flutter-plugins-dependencies
+          rm -rf .dart_tool
+          flutter pub get
+          
       - name: Build APK
         run: |
           cd simple_live_app
