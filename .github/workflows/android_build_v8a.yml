@@ -28,11 +28,12 @@ jobs:
       # 还原签名文件
       - name: Restore Keystore
         run: |
-          # 1. 使用 printf 替代 echo，避免末尾产生换行符导致文件损坏
-          printf "%s" "${{ secrets.ZI_FEI_YU }}" | base64 --decode > simple_live_app/android/my-release-key.jks
+          # 1. 使用 printf 避免末尾产生换行符破坏 JKS 文件
+          # 2. 直接将文件生成在 android/app/ 目录下
+          printf "%s" "${{ secrets.ZI_FEI_YU }}" | base64 --decode > simple_live_app/android/app/my-release-key.jks
           
           cd simple_live_app/android
-          # 2. 修正路径：jks 文件就在当前 android 目录下，直接写文件名即可
+          # 3. 因为 jks 在 app 目录下，这里直接写文件名即可
           echo "storeFile=my-release-key.jks" > key.properties
           echo "storePassword=123456" >> key.properties
           echo "keyPassword=123456" >> key.properties
