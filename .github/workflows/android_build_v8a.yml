@@ -28,7 +28,7 @@ jobs:
 # 1. 使用专用 Action 还原签名文件
       - name: Restore Keystore
         id: keystore_file
-        uses: timheuer/base64-to-file@v1.2
+        uses: timheuer/base64-to-file@v2
         with:
           fileName: 'my-release-key.jks'
           # 👇 这里改成了你刚才新建的 Secret 名字
@@ -63,7 +63,7 @@ jobs:
           flutter build apk --release --target-platform android-arm64 --no-tree-shake-icons
           
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: SimpleLive-v8a-Build
           path: simple_live_app/build/app/outputs/flutter-apk/app-release.apk
