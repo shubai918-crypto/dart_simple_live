@@ -25,45 +25,42 @@ jobs:
         with:
           flutter-version: "3.38.x"
 
-# 1. 使用专用 Action 还原签名文件
+      # 1. 使用专用 Action 还原签名文件
       - name: Restore Keystore
         id: keystore_file
         uses: timheuer/base64-to-file@v2
         with:
           fileName: 'my-release-key.jks'
-          # 👇 这里改成了你刚才新建的 Secret 名字
           encodedString: ${{ secrets.ANDROID_KEYSTORE }}
 
       # 2. 生成 key.properties
       - name: Create key.properties
         run: |
           cd simple_live_app/android
-          # 使用 Action 输出的绝对路径，Gradle 能完美识别
           echo "storeFile=${{ steps.keystore_file.outputs.filePath }}" > key.properties
           echo "storePassword=123456" >> key.properties
           echo "keyPassword=123456" >> key.properties
           echo "keyAlias=mykey" >> key.properties
-          
+
       - name: Clean and Restore packages
         run: |
           cd simple_live_app
           flutter clean
-          # 强制删除插件注册缓存文件 (解决 auto_orientation_v2 幽灵报错)
           rm -f .flutter-plugins
           rm -f .flutter-plugins-dependencies
           rm -rf .dart_tool
           flutter pub get
-          
+
       - name: Build APK
         run: |
           cd simple_live_app
-          flutter clean
-          flutter pub get
-          # 针对 vivo/Android 15 优化
-          flutter build apk --release --target-platform android-arm64 --no-tree-shake-icons
-          
+          flutter build apk --release --split-per-abi
+
       - name: Upload APK
         uses: actions/upload-artifact@v7
         with:
-          name: SimpleLive-v8a-Build
-          path: simple_live_app/build/app/outputs/flutter-apk/app-release.apk
+          name: SimpleLive-Android-Build
+          path: |
+            simple_live_app/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+            simple_live_app/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+            simple_live_app/build/app/outputs/flutter-apk/app-x86_64-release.apk
